@@ -1,0 +1,13 @@
+{
+    "username": "username1",
+    "email": "user@email.com",
+    "password": "wordOfPass",
+    "role": "enter role here"
+}, 
+
+{
+    "title": "username1",
+    "content": "user@email.com",
+    "user": ""
+}
+
