@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const Note = require('../../models/Note');
 const { authMiddleware } = require('../../utils/auth');
+const adminOnly = require('../../utils/admin')
 
 // Apply authMiddleware to all routes in this file
 router.use(authMiddleware);
@@ -11,10 +12,11 @@ router.get('/', async (req, res) => {
     // This currently finds all notes in the database.
     // It should only find notes owned by the logged in user.
     try {
-        const notes = await Note.find({});
+        const notes = await Note.find({ user: req.user._id });
         res.json(notes);
     } catch (err) {
         res.status(500).json(err);
+        console.error(err.message)
     }
 });
 
@@ -34,7 +36,7 @@ router.post('/', async (req, res) => {
 });
 
 // PUT /api/notes/:id - Update a note
-router.put('/:id', async (req, res) => {
+router.put('/:id', adminOnly, async (req, res) => {
     try {
         // This needs an authorization check
         const note = await Note.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -48,7 +50,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // DELETE /api/notes/:id - Delete a note
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', adminOnly, async (req, res) => {
     try {
         // This needs an authorization check
         const note = await Note.findByIdAndDelete(req.params.id);

@@ -2,12 +2,13 @@ const router = require('express').Router();
 const User = require('../../models/User');
 const { signToken } = require('../../utils/auth');
 
+
 // POST /api/users/register - Create a new user
 router.post('/register', async (req, res) => {
     try {
         const user = await User.create(req.body);
         const token = signToken(user);
-        res.status(201).json({ token, user }).select("-password");
+        res.status(201).json({ token, user });
         console.log(user)
     } catch (err) {
         res.status(400).json(err);
@@ -17,7 +18,7 @@ router.post('/register', async (req, res) => {
 
 // POST /api/users/login - Authenticate a user and return a token
 router.post('/login', async (req, res) => {
-    const user = await User.findOne({ email: req.body.email }).select("-password");
+    const user = await User.findOne({ email: req.body.email });
 
     if (!user) {
         return res.status(400).json({ message: "Can't find this user" });
@@ -31,6 +32,7 @@ router.post('/login', async (req, res) => {
 
     const token = signToken(user);
     res.json({ token, user });
+    console.log(user)
 });
 
 module.exports = router;
