@@ -7,9 +7,12 @@ module.exports = {
     authMiddleware: function (req, res, next) {
         let token = req.headers.authorization;
 
-        if (req.headers.authorization) {
-            token = token.split(' ').pop().trim();
+        if (!token || !token.startsWith('Bearer ')) {
+            return res.status(401).json({ error: 'No token/incorrect format' })
         }
+
+        token = token.split(' ').pop().trim();
+
 
         if (!token) {
             return res.status(401).json({ message: 'You must be logged in to do that.' });
